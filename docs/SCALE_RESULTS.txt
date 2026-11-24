@@ -1,0 +1,45 @@
+
+=== 100 agents: tick mean 4.4 ms, p99 6.6 ms (budget 500 ms), runs 114.7x real time, util 72%, abandon 0.0%, invariants OK
+component                                    ms / tick  calls / tick
+tick                                              3.94           1.0
+  dispatch (pacing+review+allocate+place)         2.30           1.0
+    snapshot (GROUP BY over agents)               1.83           3.9
+  shed                                            0.86           1.0
+    safety review                                 0.30           0.8
+events (per event)                                0.29           2.2
+  reconciler sweep                                0.11           0.5
+    provider placement                            0.09           0.8
+    allocate (reserve agents+borrowers)           0.05           0.8
+  wrap-up release                                 0.03           1.0
+  outbox                                          0.03           1.0
+  expire holds                                    0.02           1.0
+
+=== 1000 agents: tick mean 13.8 ms, p99 25.2 ms (budget 500 ms), runs 36.3x real time, util 78%, abandon 0.0%, invariants OK
+component                                    ms / tick  calls / tick
+tick                                             10.47           1.0
+  dispatch (pacing+review+allocate+place)         6.23           1.0
+events (per event)                                3.03          23.3
+    snapshot (GROUP BY over agents)               2.79           4.1
+  shed                                            2.00           1.0
+    safety review                                 1.31           1.0
+  reconciler sweep                                1.18           0.5
+    provider placement                            1.00           1.0
+    allocate (reserve agents+borrowers)           0.37           1.0
+  wrap-up release                                 0.16           1.0
+  outbox                                          0.03           1.0
+  expire holds                                    0.02           1.0
+
+=== 10000 agents: tick mean 85.6 ms, p99 131.1 ms (budget 500 ms), runs 5.8x real time, util 79%, abandon 0.1%, invariants OK
+component                                    ms / tick  calls / tick
+tick                                             53.42           1.0
+events (per event)                               30.82         233.2
+  dispatch (pacing+review+allocate+place)        25.91           1.0
+  reconciler sweep                               18.82           0.5
+    snapshot (GROUP BY over agents)              13.39           4.1
+    provider placement                           13.38           1.0
+  shed                                            3.67           1.0
+    allocate (reserve agents+borrowers)           3.05           1.0
+  wrap-up release                                 1.39           1.0
+    safety review                                 0.43           1.0
+  outbox                                          0.10           1.0
+  expire holds                                    0.03           1.0

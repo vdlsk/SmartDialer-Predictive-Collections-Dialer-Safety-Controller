@@ -1,0 +1,5 @@
+ agents threads  reserve/s  disp p50  disp p99  events/s  evt p50  evt p99  correctness
+  10000       1       4955      3.5ms   1229.1ms     10434    0.11ms    0.54ms  OK
+  10000       2       5172      3.6ms   1919.5ms      9964    0.11ms    0.63ms  OK
+  10000       4       4908      4.7ms   2016.8ms     10412    0.10ms    0.68ms  OK
+  10000       8       5308      7.4ms   1868.2ms     12669    0.03ms    0.65ms  OK

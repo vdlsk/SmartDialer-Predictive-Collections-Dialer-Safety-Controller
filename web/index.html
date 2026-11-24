@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SmartDialer</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 16%27%3E%3Crect width=%2716%27 height=%2716%27 rx=%273%27 fill=%27%231d2935%27/%3E%3Crect x=%274%27 y=%274%27 width=%278%27 height=%278%27 rx=%271%27 fill=%27%232f6db5%27/%3E%3C/svg%3E">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header class="bar">
+  <div class="brand">
+    <b>SmartDialer</b>
+    <span id="campaign" class="muted">Collections, 30+ days past due</span>
+  </div>
+  <div class="clock" title="Simulated time since the campaign started"><span id="clock">0:00</span></div>
+  <div class="ctl">
+    <button id="play" class="icon" aria-label="Pause or resume" title="Pause / resume (space)"></button>
+    <div class="seg" role="group" aria-label="Simulation speed" id="speed">
+      <button data-v="1">1×</button><button data-v="5">5×</button><button data-v="10">10×</button><button data-v="25">25×</button><button data-v="60">60×</button>
+    </div>
+  </div>
+  <div class="ctl">
+    <span class="lbl">Pacing</span>
+    <div class="seg" role="group" aria-label="Campaign dialing mode" id="mode">
+      <button data-v="PROGRESSIVE">Progressive</button><button data-v="PREDICTIVE">Predictive</button>
+    </div>
+  </div>
+  <div id="gate" class="gate" role="status"></div>
+</header>
+
+<div id="banner" class="banner" hidden></div>
+
+<main class="layout">
+  <aside class="rail left" aria-label="Conditions and faults">
+    <section>
+      <h2>Borrowers</h2>
+      <div class="scn" id="scenarios"></div>
+      <label class="slider"><span>Answer rate <output id="o-ans">30%</output></span>
+        <input id="s-ans" type="range" min="5" max="95" step="1" value="30"></label>
+      <label class="slider"><span>Average talk time <output id="o-talk">90 s</output></span>
+        <input id="s-talk" type="range" min="30" max="300" step="5" value="90"></label>
+      <p class="hint" id="scn-note"></p>
+    </section>
+
+    <section>
+      <h2>Agents <span class="muted" id="agent-count"></span></h2>
+      <div class="row">
+        <button data-act="drop_agents" data-v="10">Lose 10</button>
+        <button data-act="drop_agents" data-v="40">Lose 40</button>
+        <button data-act="restore_agents">Bring back</button>
+        <button data-act="add_agents" data-v="20">Add 20</button>
+      </div>
+      <p class="hint">“Lose” disconnects agents at once, wherever they are in a call.</p>
+    </section>
+
+    <section>
+      <h2>Telecom providers</h2>
+      <div id="providers"></div>
+      <label class="toggle"><input type="checkbox" id="t-stress"><span>Degrade both: slower, flakier, noisier</span></label>
+      <label class="toggle"><input type="checkbox" id="t-messy"><span>Provider B: duplicate and out-of-order storm</span></label>
+    </section>
+
+    <section>
+      <h2>Dialer workers</h2>
+      <div id="workers" class="workers"></div>
+      <div class="col">
+        <button data-act="crash" data-point="after_reserve">Crash after reserving, before dialing</button>
+        <button data-act="crash" data-point="after_place">Crash after provider accepted the call</button>
+        <button data-act="restart_worker">Start a replacement worker</button>
+      </div>
+    </section>
+
+    <section>
+      <h2>Restart</h2>
+      <div class="row">
+        <label class="num">Agents <input id="n-agents" type="number" min="5" max="2000" value="100"></label>
+        <label class="num">Workers <input id="n-workers" type="number" min="1" max="6" value="2"></label>
+      </div>
+      <button id="reset" class="wide">Restart simulation</button>
+    </section>
+  </aside>
+
+  <section class="center">
+    <div class="kpis" id="kpis"></div>
+
+    <div class="floor">
+      <div class="floor-head">
+        <h2>Agent floor</h2>
+        <div class="legend" id="legend"></div>
+      </div>
+      <div class="floor-wrap"><canvas id="floor" aria-label="Every agent, coloured by state"></canvas><div id="tip" class="tip" hidden></div></div>
+    </div>
+
+    <div class="charts">
+      <figure><figcaption><b>Time on calls</b><span id="v-util" class="val"></span></figcaption><svg id="c-util"></svg></figure>
+      <figure><figcaption><b>Abandoned share of answered calls</b><span id="v-ab" class="val"></span></figcaption><svg id="c-ab"></svg></figure>
+      <figure><figcaption><b>Calls ringing and agents free</b><span id="v-fl" class="val"></span></figcaption><svg id="c-fl"></svg></figure>
+      <figure><figcaption><b>Answer rate: real, estimated, planned with</b><span id="v-p" class="val"></span></figcaption><svg id="c-p"></svg></figure>
+    </div>
+  </section>
+
+  <aside class="rail right" aria-label="Decisions and events">
+    <section class="grow">
+      <div class="h-row"><h2>Why it dialed</h2>
+        <label class="toggle small"><input type="checkbox" id="only-cut"><span>Only show cuts</span></label></div>
+      <ol id="ledger" class="ledger"></ol>
+    </section>
+    <section class="log-sec">
+      <h2>Events</h2>
+      <ol id="log" class="log"></ol>
+      <div id="disp" class="hint"></div>
+    </section>
+  </aside>
+</main>
+<script src="/app.js"></script>
+</body>
+</html>
